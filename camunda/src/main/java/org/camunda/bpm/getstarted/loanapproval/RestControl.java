@@ -1,5 +1,8 @@
 package org.camunda.bpm.getstarted.loanapproval;
 
+import java.util.Arrays;
+import java.util.List;
+
 //import java.util.concurrent.atomic.AtomicLong;
 
 import javax.ws.rs.Consumes;
@@ -18,12 +21,19 @@ public class RestControl {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public CustomerPOJO startLoanApplication(@RequestBody CustomerPOJO customer) throws Exception {
+	public LoanDecisionSummaryPOJO startLoanApplication(@RequestBody CustomerPOJO customer) throws Exception {
 		System.out.println("Creating a person");
 
-		StringBuilder loanDecision = LoanDeciderAPI.sendLoanRequest(customer.getUserId(), customer.getCreditScore());
-		System.out.println(loanDecision);
-		return customer;
+		LoanDecisionPOJO loanDecision = LoanDeciderAPI.sendLoanRequest(customer.getUserId(), customer.getCreditScore());
+
+		LoanDecisionSummaryPOJO response = new LoanDecisionSummaryPOJO();
+		response.setApr(loanDecision.getApr());
+		response.setLoanDecision(loanDecision.getLoanDecision());
+		response.setProcessId(loanDecision.getProcessId());
+		System.out.println(response.getApr());
+		System.out.println(response.getLoanDecision());
+		System.out.println(response.getProcessId());
+		return response;
 	}
 
 }

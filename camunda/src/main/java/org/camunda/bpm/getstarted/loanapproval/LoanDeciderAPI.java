@@ -10,18 +10,18 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 //import org.json.simple.JSONArray; 
 //import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser; 
 
 public class LoanDeciderAPI {
-	public static StringBuilder sendLoanRequest(String userId, int creditScore) throws Exception {
-		//String payload = "{\"userId\": \"123ID\", " + "\"creditScore\": \"800\"" + "}";
+	public static LoanDecisionPOJO sendLoanRequest(String userId, int creditScore) throws Exception {
+
 		String creditSc = Integer.toString(creditScore);
 		String payload = "{\"userId\": \"" + userId + "\", " + "\"creditScore\": \"" + creditSc + "\"" + "}";
 
-		// JSONParser parser = new JSONParser();
-		// JSONObject json = (JSONObject) parser.parse(payload);
 
 		StringEntity entity = new StringEntity(payload, ContentType.APPLICATION_JSON);
 
@@ -31,17 +31,15 @@ public class LoanDeciderAPI {
 		request.setEntity(entity);
 
 		HttpResponse response = httpClient.execute(request);
-
-		BufferedReader br = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-
-		StringBuilder content = new StringBuilder();
-		String line;
-		while (null != (line = br.readLine())) {
-			content.append(line);
-		}
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		LoanDecisionPOJO myObject = objectMapper.readValue(response.getEntity().getContent(), LoanDecisionPOJO.class);
+		
+		System.out.println(myObject.getComments());
 
 		System.out.println(response.getStatusLine().getStatusCode());
-		System.out.println(content);
-		return content;
+		System.out.println(response.getClass());
+		
+		return myObject;
 	}
 }
