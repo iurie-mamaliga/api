@@ -1,9 +1,9 @@
 package org.camunda.bpm.getstarted.loanapproval;
 
-import java.util.logging.Level;
+//import java.util.logging.Level;
 //import java.util.logging.Logger;
 import java.util.Properties;
-import java.util.logging.Level;
+//import java.util.logging.Level;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -18,7 +18,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+//import org.springframework.stereotype.Component;
 
 public class SendDenyEmail implements JavaDelegate {
 

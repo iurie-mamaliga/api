@@ -1,9 +1,6 @@
 package org.camunda.bpm.getstarted.loanapproval;
 
-import java.util.logging.Level;
-//import java.util.logging.Logger;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -18,7 +15,6 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 public class SendApprovalEmail implements JavaDelegate {
 
@@ -32,7 +28,6 @@ public class SendApprovalEmail implements JavaDelegate {
 	}
 
 	public static void sendMail(Object credScore, Object custEmail, Object name) throws Exception {
-		// String recepient = "coding.rescue@gmail.com";
 		String score = credScore.toString();
 		String recepient = custEmail.toString();
 		String fName = name.toString();

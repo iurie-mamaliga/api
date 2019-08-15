@@ -1,8 +1,5 @@
 package org.camunda.bpm.getstarted.loanapproval;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -14,16 +11,11 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-//import org.json.simple.JSONArray; 
-//import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser; 
 
 public class LoanDeciderAPI implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		//LOGGER.info("Processing request by '" + execution.getVariable("customerId") + "'...");
 		sendLoanRequest(execution.getVariable("userId"), execution.getVariable("creditScore"));
 	}
 	

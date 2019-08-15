@@ -1,7 +1,7 @@
 package org.camunda.bpm.getstarted.loanapproval;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-//import org.codehaus.jackson.annotate.JsonProperty;
+
 @JsonInclude(Include.NON_EMPTY)
 public class LoanDecisionSummaryPOJO {
 

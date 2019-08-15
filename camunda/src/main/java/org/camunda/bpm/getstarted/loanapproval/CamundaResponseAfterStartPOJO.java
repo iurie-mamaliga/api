@@ -1,19 +1,11 @@
 package org.camunda.bpm.getstarted.loanapproval;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-//import org.codehaus.jackson.annotate.JsonProperty;
-import java.util.ArrayList;
 
-
-
-//@JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class CamundaResponseAfterStartPOJO {
 
-		 //ArrayList < Object > links = new ArrayList < Object > ();
 		 private String id;
 		 private String definitionId;
 		 private String businessKey = null;
