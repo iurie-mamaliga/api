@@ -9,17 +9,27 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 //import org.json.simple.JSONArray; 
 //import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser; 
 
-public class LoanDeciderAPI {
-	public static LoanDecisionPOJO sendLoanRequest(String userId, int creditScore) throws Exception {
+public class LoanDeciderAPI implements JavaDelegate {
+	@Override
+	public void execute(DelegateExecution execution) throws Exception {
+		//LOGGER.info("Processing request by '" + execution.getVariable("customerId") + "'...");
+		sendLoanRequest(execution.getVariable("userId"), execution.getVariable("creditScore"));
+	}
+	
+	public static LoanDecisionPOJO sendLoanRequest(Object userId, Object creditScore) throws Exception {
 
-		String creditSc = Integer.toString(creditScore);
+		String creditSc = creditScore.toString();
 		String payload = "{\"userId\": \"" + userId + "\", " + "\"creditScore\": \"" + creditSc + "\"" + "}";
 
 
