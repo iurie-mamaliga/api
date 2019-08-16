@@ -8,11 +8,20 @@ public class LoanDecisionSummaryPOJO {
 	private String processId;
 	private String loanDecision;
 	private String apr;
+	private String comments;
 	
 	public LoanDecisionSummaryPOJO() {
 		
 	}
 
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	
 	public String getProcessId() {
 		return processId;
 	}

@@ -9,7 +9,7 @@ public class CustomerPOJO {
 	private String firstName;
 	private String lastName;
 	private String userId;
-	private int SSN;
+	private String socialSecurityNumber;
 	private int age;
 	private String address;
 	private int income;
@@ -45,12 +45,12 @@ public class CustomerPOJO {
 		this.userId = userId;
 	}
 
-	public int getSSN() {
-		return SSN;
+	public String getSocialSecurityNumber() {
+		return socialSecurityNumber;
 	}
 
-	public void setSSN(int sSN) {
-		SSN = sSN;
+	public void setSocialSecurityNumber(String socialSecurityNumber) {
+		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
 	public int getAge() {
