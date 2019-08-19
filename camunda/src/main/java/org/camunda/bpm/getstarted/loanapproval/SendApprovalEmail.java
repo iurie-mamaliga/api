@@ -22,16 +22,18 @@ public class SendApprovalEmail implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		LOGGER.info("Processing request by '" + execution.getVariable("customerId") + "'...");
-		sendMail(execution.getVariable("creditScore"), execution.getVariable("customerEmail"),
-				execution.getVariable("firstName"));
+		LOGGER.info("Processing request by '" + execution.getVariable("userId") + "'...");
+		sendMail(execution.getVariable("creditScore"), execution.getVariable("email"),
+				execution.getVariable("firstName"), execution.getVariable("loanApproved"),
+				execution.getVariable("loanAmount"));
 	}
 
-	public static void sendMail(Object credScore, Object custEmail, Object name) throws Exception {
+	public static void sendMail(Object credScore, Object custEmail, Object name, Object loanApproved, Object loanAmount) throws Exception {
 		String score = credScore.toString();
 		String recepient = custEmail.toString();
 		String fName = name.toString();
-
+		boolean loanIsApproved = (boolean) loanApproved;
+		System.out.println("loan approval status " + loanIsApproved);
 		System.out.println(score);
 		System.out.println("Preparing to send email");
 
@@ -42,8 +44,8 @@ public class SendApprovalEmail implements JavaDelegate {
 		properties.put("mail.smtp.host", "smtp.gmail.com");
 		properties.put("mail.smtp.port", "587");
 
-		final String myAccountEmail = "coding.rescue@gmail.com";
-		final String password = "password";
+		final String myAccountEmail = "loan.approval.camunda@gmail.com";
+		final String password = "CamundaCamunda12";
 
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
@@ -52,21 +54,30 @@ public class SendApprovalEmail implements JavaDelegate {
 			}
 		});
 
-		Message message = prepareMessage(session, myAccountEmail, recepient, score, fName);
+		Message message = prepareMessage(session, myAccountEmail, recepient, score, fName, loanIsApproved, loanAmount);
 
 		Transport.send(message);
 		System.out.println("Email sent successfully");
+		System.out.println("loan amount " + loanAmount.toString());
 
 	}
 
 	private static Message prepareMessage(Session session, String myAccountEmail, String recepient, String crScore,
-			String name) {
+			String name, boolean loanIsApproved, Object loanAmount) {
 		try {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(myAccountEmail));
 			message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
 			message.setSubject("Loan application decision for " + name);
+			
+			if(loanIsApproved && Integer.parseInt(crScore) > 599) {
+				message.setText("Based on your credit score of " + crScore + " your application has been approved!");
+			}
+			
 			message.setText("Based on your credit score of " + crScore + " your application has been approved!");
+			
+			
+			
 			return message;
 		} catch (Exception e) {
 			// Logger.getLogger(JavaMailUtil.class.getName()).log(Level.SEVERE, null, e);

@@ -26,8 +26,8 @@ public class SendDenyEmail implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
-		LOGGER.info("Processing request by '" + execution.getVariable("customerId") + "'...");
-		sendMail(execution.getVariable("creditScore"), execution.getVariable("customerEmail"),
+		LOGGER.info("Processing request by '" + execution.getVariable("userId") + "'...");
+		sendMail(execution.getVariable("creditScore"), execution.getVariable("email"),
 				execution.getVariable("firstName"));
 	}
 
@@ -47,8 +47,8 @@ public class SendDenyEmail implements JavaDelegate {
 		properties.put("mail.smtp.host", "smtp.gmail.com");
 		properties.put("mail.smtp.port", "587");
 
-		final String myAccountEmail = "coding.rescue@gmail.com";
-		final String password = "password";
+		final String myAccountEmail = "loan.approval.camunda@gmail.com";
+		final String password = "CamundaCamunda12";
 
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override

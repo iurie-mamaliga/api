@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -30,6 +31,42 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class RestControl {	
 	
+	
+	@RequestMapping("/API/bpm/loanApproval/getProcessTaskList")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public static CamundaTaskInfoPOJO[] getProcessTaskList(@RequestBody Object processDefinition) throws Exception {
+        
+        System.out.println("Request Received for GetProcessTaskList! ");
+        
+        System.out.println(processDefinition.toString());
+        
+        String processDefinitionKey = processDefinition.toString();
+        String[] tempString = processDefinitionKey.split("=");
+        processDefinitionKey = tempString[1].replaceAll("}", "");
+        
+        System.out.println("Before URI");
+        
+        String uri = "http://localhost:8080/rest/task/?processDefinitionKey=" + processDefinitionKey;
+        HttpGet request = new HttpGet(uri);
+        
+        System.out.println("Before HttpClient");
+        
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse response = httpClient.execute(request);
+        System.out.println("After Client: "+response.toString());
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        System.out.println(response.getEntity().getContent().toString());
+        //CamundaTaskListPOJO camundaResponse = objectMapper.readValue(response.getEntity().getContent(), CamundaTaskListPOJO.class);
+        
+        CamundaTaskInfoPOJO[] pojos = objectMapper.readValue(response.getEntity().getContent(), CamundaTaskInfoPOJO[].class);
+        
+        //return camundaResponse;
+        return pojos;
+    }
 	
 	@OPTIONS
 	@CrossOrigin(origins="*", allowedHeaders="*")
@@ -96,6 +133,7 @@ public class RestControl {
 		String payload = "{\"variables\":" +
 	    "{" +
 		    "\"loanApproved\": {\"value\": " + taskToComplete.isApproved() + "}}" +
+		    //"\"loanApproved\": {\"value\": " + taskToComplete.isApproved() + "}}" +
 		"}";
 					
 
@@ -167,6 +205,7 @@ public class RestControl {
 					     " \"address\" :{\"value\":" + "\"" + customer.getAddress() + "\"" + ", \"type\": \"String\"}," +
 					     " \"email\" :{\"value\":" + "\"" + customer.getEmail() + "\"" + ", \"type\": \"String\"}," +
 					     " \"socialSecurityNumber\" :{\"value\":" + "\"" + customer.getSocialSecurityNumber() + "\"" + ", \"type\": \"String\"}," +
+					     " \"loanApproved\" :{\"value\":" + "\"" + true + "\"" + ", \"type\": \"boolean\"}," +
 					     " \"loanAmount\" :{\"value\":" + "\"" + customer.getLoanAmount() + "\"" + ", \"type\": \"integer\"}" +
 					  "}" +
 					"}";
@@ -199,4 +238,3 @@ public class RestControl {
 	}
 
 }
-

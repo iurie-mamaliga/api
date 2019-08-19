@@ -23,7 +23,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_12wv2p5" name="Yes" sourceRef="ExclusiveGateway_1q32ma4" targetRef="Task_0k4fve2">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{creditScore &gt; '599'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Task_0k4fve2" name="Send Notification" camunda:asyncAfter="true" camunda:exclusive="false" camunda:class="org.camunda.bpm.getstarted.loanapproval.LoanDeciderAPI">
+    <bpmn:serviceTask id="Task_0k4fve2" name="Send Notification" camunda:asyncAfter="true" camunda:exclusive="false" camunda:class="org.camunda.bpm.getstarted.loanapproval.SendApprovalEmail">
       <bpmn:incoming>SequenceFlow_08i73vj</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_12wv2p5</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_017yqyf</bpmn:outgoing>
