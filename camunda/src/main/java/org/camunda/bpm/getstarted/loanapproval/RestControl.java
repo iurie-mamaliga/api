@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
@@ -22,6 +24,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -118,6 +121,100 @@ public class RestControl {
 		return response;
 	}
 	
+	@OPTIONS
+	@CrossOrigin(origins="*", allowedHeaders="*")
+	@RequestMapping("/API/bpm/loanApproval/process/retrieveProcesses/{businessKey}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<CamundaResponseAfterStartPOJO> retrieveProcesses(@PathVariable ("businessKey") String businessKey) throws Exception {
+		
+		System.out.println("retrieveProcesses :: " + businessKey);
+		
+		List<CamundaResponseAfterStartPOJO> response = retrieveProcessList(businessKey);
+		
+		Response.ok()
+	      .header("Access-Control-Allow-Origin", "*")
+	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
+	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
+		
+		
+		System.out.println("retrieveProcess completed");
+		return response;
+	}
+	
+	@OPTIONS
+	@CrossOrigin(origins="*", allowedHeaders="*")
+	@RequestMapping("/API/bpm/loanApproval/process/retrieveProcessById/{processId}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public CustomerPOJO retrieveProcessById(@PathVariable ("processId") String processId) throws Exception {
+		
+		System.out.println("retrieveProcessById :: " + processId);
+		
+		CustomerPOJO customer = retrieveProcessByIdHelper(processId);
+		
+		Response.ok()
+	      .header("Access-Control-Allow-Origin", "*")
+	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
+	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
+		
+		
+		System.out.println("retrieveProcessId completed");
+		return customer;
+	}
+	
+	public static CustomerPOJO retrieveProcessByIdHelper(String processId) throws ClientProtocolException, IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+
+		HttpGet request = new HttpGet(
+				"http://localhost:8080/rest/process-instance/" + processId + "/variables");		
+
+		HttpResponse response = httpClient.execute(request);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		DataVariablesPOJO data = objectMapper.readValue(response.getEntity().getContent(), DataVariablesPOJO.class);
+		
+		System.out.println(response);
+		System.out.println(response.getStatusLine().getStatusCode());
+		System.out.println(response.getClass());
+		
+		CustomerPOJO customer = new CustomerPOJO();
+		customer.setAddress(data.getAddress().getValue());
+		customer.setAge(Integer.parseInt(data.getAge().getValue()));
+		customer.setCreditScore(Integer.parseInt(data.getCreditScore().getValue()));
+		customer.setEmail(data.getEmail().getValue());
+		customer.setFirstName(data.getFirstName().getValue());
+		customer.setIncome(Integer.parseInt(data.getIncome().getValue()));
+		customer.setLastName(data.getLastName().getValue());
+		customer.setLoanAmount(Integer.parseInt(data.getLoanAmount().getValue()));
+		customer.setSocialSecurityNumber(data.getSocialSecurityNumber().getValue());
+		customer.setUserId(data.getUserId().getValue());
+				
+		return customer;
+	}
+	
+	public static List<CamundaResponseAfterStartPOJO> retrieveProcessList(String businessKey) throws ClientProtocolException, IOException {
+		HttpClient httpClient = HttpClientBuilder.create().build();
+
+		HttpGet request = new HttpGet(
+				"http://localhost:8080/rest/process-instance?businessKey=" + businessKey);		
+
+		HttpResponse response = httpClient.execute(request);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		List<CamundaResponseAfterStartPOJO> camundaResponse = objectMapper.readValue(response.getEntity().getContent(), List.class);
+		
+		System.out.println(response);
+		System.out.println(response.getStatusLine().getStatusCode());
+		System.out.println(response.getClass());
+		
+		return camundaResponse;
+	}
+	
 	public static TaskCompleteSummaryPOJO closeTask(TaskCompleteSummaryPOJO taskToComplete, String taskId) throws ClientProtocolException, IOException {
 		
 		TaskCompleteSummaryPOJO response = new TaskCompleteSummaryPOJO();
@@ -207,7 +304,9 @@ public class RestControl {
 					     " \"socialSecurityNumber\" :{\"value\":" + "\"" + customer.getSocialSecurityNumber() + "\"" + ", \"type\": \"String\"}," +
 					     " \"loanApproved\" :{\"value\":" + "\"" + true + "\"" + ", \"type\": \"boolean\"}," +
 					     " \"loanAmount\" :{\"value\":" + "\"" + customer.getLoanAmount() + "\"" + ", \"type\": \"integer\"}" +
-					  "}" +
+					  "}" + "," + 
+					 " \"businessKey\" : " + customer.getSocialSecurityNumber() + "," +
+					 " \"withVariablesInReturn\" : true" +
 					"}";
 					
 
