@@ -8,7 +8,7 @@
       <bpmn:incoming>SequenceFlow_1r6v8xm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_15r0850</bpmn:outgoing>
     </bpmn:businessRuleTask>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1q32ma4" name="Is Loan auto approved?" default="SequenceFlow_03lipzj">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1q32ma4" name="Is Loan auto approved? Version 2" default="SequenceFlow_03lipzj">
       <bpmn:incoming>SequenceFlow_15r0850</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_03lipzj</bpmn:outgoing>
       <bpmn:outgoing>SequenceFlow_12wv2p5</bpmn:outgoing>
@@ -45,7 +45,7 @@
       <bpmndi:BPMNShape id="ExclusiveGateway_1q32ma4_di" bpmnElement="ExclusiveGateway_1q32ma4" isMarkerVisible="true">
         <dc:Bounds x="441" y="238" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="436" y="295" width="61" height="27" />
+          <dc:Bounds x="436" y="295" width="61" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_1lfbg9x_di" bpmnElement="EndEvent_1lfbg9x">

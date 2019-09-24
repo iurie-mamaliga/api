@@ -45,7 +45,7 @@ public class SendApprovalEmail implements JavaDelegate {
 		properties.put("mail.smtp.port", "587");
 
 		final String myAccountEmail = "loan.approval.camunda@gmail.com";
-		final String password = "CamundaCamunda12";
+		final String password = "CamundaCamunda123";
 
 		Session session = Session.getInstance(properties, new Authenticator() {
 			@Override
@@ -71,12 +71,14 @@ public class SendApprovalEmail implements JavaDelegate {
 			message.setSubject("Loan application decision for " + name);
 			
 			if(loanIsApproved && Integer.parseInt(crScore) > 599) {
-				message.setText("Based on your credit score of " + crScore + " your application has been approved!");
+				message.setText("Based on your credit score of " + crScore + " your loan application has been approved " +
+						"in the full amount requested of " + loanAmount + " dollars.");
+			}else if(loanIsApproved && Integer.parseInt(crScore) < 600) {
+				message.setText("Based on your low credit score of " + crScore + " your application has been approved " +
+						"in the amount of " + loanAmount + " dollars.");
+			}else if(!loanIsApproved && Integer.parseInt(crScore) < 600) {
+				message.setText("Based on your low credit score of " + crScore + " your application has been denied.");
 			}
-			
-			message.setText("Based on your credit score of " + crScore + " your application has been approved!");
-			
-			
 			
 			return message;
 		} catch (Exception e) {

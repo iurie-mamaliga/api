@@ -21,6 +21,8 @@ public class LoanDeciderAPI implements JavaDelegate {
 	
 	public static LoanDecisionPOJO sendLoanRequest(Object userId, Object creditScore) throws Exception {
 
+		
+		
 		String creditSc = creditScore.toString();
 		String payload = "{\"userId\": \"" + userId + "\", " + "\"creditScore\": \"" + creditSc + "\"" + "}";
 
@@ -29,7 +31,7 @@ public class LoanDeciderAPI implements JavaDelegate {
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost request = new HttpPost(
-				"http://drools-springboot-msk-sample.apps.us-west-2.online-starter.openshift.com/api/rules/loanApproval/getDecision");
+				"http://loan-approval-rules-loan-approval-rules.b9ad.pro-us-east-1.openshiftapps.com/api/rules/loanApproval/getDecision");
 		request.setEntity(entity);
 
 		HttpResponse response = httpClient.execute(request);

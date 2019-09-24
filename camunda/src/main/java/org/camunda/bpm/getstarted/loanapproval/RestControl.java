@@ -27,14 +27,207 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
+@CrossOrigin(origins="*")
 public class RestControl {	
 	
+	//get variables for all processes, one user
+		@OPTIONS
+		@CrossOrigin(origins="*")
+		@RequestMapping("/API/bpm/allApplicationDetailsByUser")
+	    @GET
+	    @Produces(MediaType.APPLICATION_JSON)
+		@Consumes(MediaType.TEXT_PLAIN)
+	    public static LoanApplicationPOJO[] getAllLoanApplicationByUser(@RequestParam ("userId") String userId) throws Exception {
+	        
+	        System.out.println("Request Received for variables api! ");
+	        
+	        int responseArrayLength = 0;
+	        
+	        String uri = "http://localhost:8080/rest/variable-instance";
+	        HttpGet request = new HttpGet(uri);
+	        
+	        System.out.println("Before HttpClient");
+	        
+	        HttpClient httpClient = HttpClientBuilder.create().build();
+	        HttpResponse response = httpClient.execute(request);
+	        System.out.println("After Client: "+response.toString());
+	        
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        
+	        System.out.println(response.getEntity().getContent().toString());
+	          
+	        ProcessVariablesPOJO[] pojos = objectMapper.readValue(response.getEntity().getContent(), ProcessVariablesPOJO[].class);
+	        
+	        for(int i = 0; i < pojos.length / 11; i++) {
+	        	if(pojos[7 + i * 11].getValue().equals(userId)) {
+	        		responseArrayLength += 1;
+
+	        	}
+	        }
+	        
+	        LoanApplicationPOJO[] processVariables = new LoanApplicationPOJO[responseArrayLength]; //pojos.length/11
+	        
+	        System.out.println("array length " + processVariables.length);
+	        
+	        for(int i = 0; i < responseArrayLength ; i++)
+	        {
+	        	processVariables[i] = new LoanApplicationPOJO();
+	        }
+	        int count = 0;
+	        System.out.println("testing id" + processVariables[0].getProcessInstanceId());
+	        for(int i = 0; i < pojos.length / 11; i++) {
+	        	if(pojos[7 + i * 11].getValue().equals(userId)) {
+		        	processVariables[count].setProcessInstanceId(pojos[0 + i * 11].getActivityInstanceId());
+		        	System.out.println("testing id" + processVariables[0].getProcessInstanceId());
+		        	
+		        	
+		        	processVariables[count].setIncome(Integer.parseInt(pojos[0 + i * 11].getValue()));
+		        	processVariables[count].setFirstName(pojos[1 + i * 11].getValue());
+		        	processVariables[count].setLastName(pojos[2 + i * 11].getValue());
+		        	processVariables[count].setCreditScore(Integer.parseInt(pojos[4 + i * 11].getValue()));
+		        	processVariables[count].setAddress(pojos[5 + i * 11].getValue());
+		        	processVariables[count].setSocialSecurityNumber(pojos[6 + i * 11].getValue());
+		        	processVariables[count].setUserId(pojos[7 + i * 11].getValue());
+		        	processVariables[count].setAge(Integer.parseInt(pojos[8 + i * 11].getValue()));
+		        	processVariables[count].setEmail(pojos[9 + i * 11].getValue());
+		        	processVariables[count].setLoanAmount(Integer.parseInt(pojos[10 + i * 11].getValue()));
+		        	count += 1;
+	        	}
+	        }
+	        	
+	        return processVariables;
+	    }
+
+	        
 	
+	//get variables for all processes, all users
+	@OPTIONS
+	@CrossOrigin(origins="*")
+	@RequestMapping("/API/bpm/allApplicationDetails")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public static LoanApplicationPOJO[] getAllLoanApplication() throws Exception {
+        
+        System.out.println("Request Received for variables api! ");
+        
+        
+        
+        String uri = "http://localhost:8080/rest/variable-instance";
+        HttpGet request = new HttpGet(uri);
+        
+        System.out.println("Before HttpClient");
+        
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse response = httpClient.execute(request);
+        System.out.println("After Client: "+response.toString());
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        System.out.println(response.getEntity().getContent().toString());
+          
+        ProcessVariablesPOJO[] pojos = objectMapper.readValue(response.getEntity().getContent(), ProcessVariablesPOJO[].class);
+        
+        System.out.println("testing id" + pojos[0].getActivityInstanceId());
+        
+        LoanApplicationPOJO[] processVariables = new LoanApplicationPOJO[pojos.length/11]; //pojos.length/11
+        
+        System.out.println("array length " + processVariables.length);
+        
+        for(int i = 0; i < pojos.length/11 ; i++)
+        {
+        	processVariables[i] = new LoanApplicationPOJO();
+        }
+        
+        System.out.println("testing id" + processVariables[0].getProcessInstanceId());
+        for(int i = 0; i < pojos.length / 11; i++) {
+        	processVariables[i].setProcessInstanceId(pojos[0 + i * 11].getActivityInstanceId());
+        	System.out.println("testing id" + processVariables[0].getProcessInstanceId());
+        	
+        	
+        	processVariables[i].setIncome(Integer.parseInt(pojos[0 + i * 11].getValue()));
+        	processVariables[i].setFirstName(pojos[1 + i * 11].getValue());
+        	processVariables[i].setLastName(pojos[2 + i * 11].getValue());
+        	processVariables[i].setCreditScore(Integer.parseInt(pojos[4 + i * 11].getValue()));
+        	processVariables[i].setAddress(pojos[5 + i * 11].getValue());
+        	processVariables[i].setSocialSecurityNumber(pojos[6 + i * 11].getValue());
+        	processVariables[i].setUserId(pojos[7 + i * 11].getValue());
+        	processVariables[i].setAge(Integer.parseInt(pojos[8 + i * 11].getValue()));
+        	processVariables[i].setEmail(pojos[9 + i * 11].getValue());
+        	processVariables[i].setLoanAmount(Integer.parseInt(pojos[10 + i * 11].getValue()));
+        }
+        	
+        return processVariables;
+    }
+	
+	//get variables for individual process
+	@OPTIONS
+	@CrossOrigin(origins="*")
+	@RequestMapping("/API/bpm/applicationDetails")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public static CustomerPOJO getVariablesForProcess(@RequestBody Object loanApplicationId) throws Exception {
+        
+        System.out.println("Request Received for variables api! ");
+        
+        System.out.println("Loan id from variables" + loanApplicationId.toString());
+        
+        String processDefinitionKey = loanApplicationId.toString();
+        String[] tempString = processDefinitionKey.split("=");
+        processDefinitionKey = tempString[1].replaceAll("}", "");
+        System.out.println("Loan id from variables " + processDefinitionKey);
+        
+        System.out.println("Before URI");
+        
+        String uri = "http://localhost:8080/rest/variable-instance?" +
+        		 "processInstanceId=" + processDefinitionKey;
+        HttpGet request = new HttpGet(uri);
+        
+        System.out.println("Before HttpClient");
+        
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse response = httpClient.execute(request);
+        System.out.println("After Client: "+response.toString());
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        
+        System.out.println(response.getEntity().getContent().toString());
+          
+        ProcessVariablesPOJO[] pojos = objectMapper.readValue(response.getEntity().getContent(), ProcessVariablesPOJO[].class);
+        
+        CustomerPOJO processVariables = new CustomerPOJO();
+        
+
+        	processVariables.setIncome(Integer.parseInt(pojos[0].getValue()));
+        	processVariables.setFirstName(pojos[1].getValue());
+        	processVariables.setLastName(pojos[2].getValue());
+        	processVariables.setCreditScore(Integer.parseInt(pojos[4].getValue()));
+        	processVariables.setAddress(pojos[5].getValue());
+        	processVariables.setSocialSecurityNumber(pojos[6].getValue());
+        	processVariables.setUserId(pojos[7].getValue());
+        	processVariables.setAge(Integer.parseInt(pojos[8].getValue()));
+        	processVariables.setEmail(pojos[9].getValue());
+        	processVariables.setLoanAmount(Integer.parseInt(pojos[10].getValue()));
+        
+        	/*
+        	Response.ok()
+  	      .header("Access-Control-Allow-Origin", "*")
+  	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
+  	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
+        	*/
+        return processVariables;
+    }
+	
+	
+	
+	@OPTIONS
+	@CrossOrigin(origins="*", allowedHeaders="*")
 	@RequestMapping("/API/bpm/loanApproval/getProcessTaskList")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -63,16 +256,19 @@ public class RestControl {
         ObjectMapper objectMapper = new ObjectMapper();
         
         System.out.println(response.getEntity().getContent().toString());
-        //CamundaTaskListPOJO camundaResponse = objectMapper.readValue(response.getEntity().getContent(), CamundaTaskListPOJO.class);
-        
+                
         CamundaTaskInfoPOJO[] pojos = objectMapper.readValue(response.getEntity().getContent(), CamundaTaskInfoPOJO[].class);
         
-        //return camundaResponse;
+        Response.ok()
+	      .header("Access-Control-Allow-Origin", "*")
+	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
+	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
+        
         return pojos;
     }
 	
 	@OPTIONS
-	@CrossOrigin(origins="*", allowedHeaders="*")
+	@CrossOrigin(origins="*")
 	@RequestMapping("/API/bpm/loanApproval/process/startProcess")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -87,20 +283,18 @@ public class RestControl {
 		response.setLoanDecision(loanDecision.getLoanDecision());
 		response.setProcessId(loanDecision.getProcessId());
 		response.setComments(loanDecision.getComments());
+		
+		
 		System.out.println(response.getApr());
 		System.out.println(response.getLoanDecision());
 		System.out.println(response.getProcessId());
 		
-		Response.ok()
-	      .header("Access-Control-Allow-Origin", "*")
-	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
-	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
 		
 		return response;
 	}
 	
 	@OPTIONS
-	@CrossOrigin(origins="*", allowedHeaders="*")
+	@CrossOrigin(origins="*")
 	@RequestMapping("/API/bpm/loanApproval/task/completeTask")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -111,18 +305,14 @@ public class RestControl {
 		String taskId = getTaskId(taskToComplete.getTaskId());
 		TaskCompleteSummaryPOJO response = closeTask(taskToComplete, taskId);
 		
-		Response.ok()
-	      .header("Access-Control-Allow-Origin", "*")
-	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
-	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
-		
+
 		
 		System.out.println("Task Closed");
 		return response;
 	}
 	
 	@OPTIONS
-	@CrossOrigin(origins="*", allowedHeaders="*")
+	@CrossOrigin(origins="*")
 	@RequestMapping("/API/bpm/loanApproval/process/retrieveProcesses/{businessKey}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -133,10 +323,7 @@ public class RestControl {
 		
 		List<CamundaResponseAfterStartPOJO> response = retrieveProcessList(businessKey);
 		
-		Response.ok()
-	      .header("Access-Control-Allow-Origin", "*")
-	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
-	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
+
 		
 		
 		System.out.println("retrieveProcess completed");
@@ -144,7 +331,7 @@ public class RestControl {
 	}
 	
 	@OPTIONS
-	@CrossOrigin(origins="*", allowedHeaders="*")
+	@CrossOrigin(origins="*")
 	@RequestMapping("/API/bpm/loanApproval/process/retrieveProcessById/{processId}")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -155,11 +342,7 @@ public class RestControl {
 		
 		CustomerPOJO customer = retrieveProcessByIdHelper(processId);
 		
-		Response.ok()
-	      .header("Access-Control-Allow-Origin", "*")
-	      .header("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS")
-	      .header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With").build();
-		
+
 		
 		System.out.println("retrieveProcessId completed");
 		return customer;
@@ -313,8 +496,7 @@ public class RestControl {
 		StringEntity entity = new StringEntity(payload, ContentType.APPLICATION_JSON);
 
 		HttpClient httpClient = HttpClientBuilder.create().build();
-		//add all values to camunda payload
-		//TO DO change localhost to route: http://camunda-apii-camunda-api.b9ad.pro-us-east-1.openshiftapps.com
+
 		HttpPost request = new HttpPost(
 				"http://localhost:8080/rest/process-definition/key/loanApproval/start");
 		request.setEntity(entity);
@@ -325,6 +507,8 @@ public class RestControl {
 		CamundaResponseAfterStartPOJO camundaResponse = objectMapper.readValue(response.getEntity().getContent(), CamundaResponseAfterStartPOJO.class);
 		
 		LoanDecisionPOJO myObject = LoanDeciderAPI.sendLoanRequest(customer.getUserId(), customer.getCreditScore());
+
+		
 		
 		myObject.setProcessId(camundaResponse.getId());
 		

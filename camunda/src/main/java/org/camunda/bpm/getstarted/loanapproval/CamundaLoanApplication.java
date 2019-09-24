@@ -7,9 +7,11 @@ import org.camunda.bpm.spring.boot.starter.event.PostDeployEvent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.EventListener;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
 @EnableProcessApplication
+@CrossOrigin(origins="*")
 @ProcessApplication("Loan Approval App")
 public class CamundaLoanApplication {
 
